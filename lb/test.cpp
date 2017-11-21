@@ -28,7 +28,7 @@ int httpserver_bindsocket(int port, int backlog) {
 	if (nfd < 0) return -1;
 	int one = 1;
 	r = setsockopt(nfd, SOL_SOCKET, SO_REUSEADDR, (char *)&one, sizeof(int));//设置端口复用
-
+	//evutil_make_listen_socket_reuseable(nfd);
 	struct sockaddr_in addr;
 	memset(&addr, 0, sizeof(addr));
 	addr.sin_family = AF_INET;
@@ -40,7 +40,9 @@ int httpserver_bindsocket(int port, int backlog) {
 	r = listen(nfd, backlog);
 	if (r < 0) return -1;
 
+	
 	//设置非阻塞
+	//evutil_make_socket_nonblocking(nfd);
 #ifdef WIN32
 	unsigned long flags = 1;
 	if (ioctlsocket(nfd,FIONBIO,&flags) < 0)
